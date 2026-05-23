@@ -6,6 +6,7 @@
 - 兼容新版本 Claude Code 的 `Task -> Agent` 原生工具更名：现在把 `Task` 视为 `Agent` 的别名，同步覆盖 capability 识别、hook matcher、真实会话回归与状态连续体
 - 收紧 capability / compare / explain 场景下的 team / task-board 注入，避免“讲使用场景、做表格对比、解释协议”时误触发 `default` team、误演示 subagent/team/workflow
 - 更新 native agent / output style 约束，减少过度规划、强行确认、元叙述、表演式协作和不必要的工具教学
+- 继续收紧输出纪律：默认单答案直给，减少黑话、邀约式收尾、多备选堆砌和咨询式废话，进一步靠近简洁、自然、准确、统一的表达
 - 保留 streaming / proxy 问题的宿主边界：已尽量减少多余注入，但 `sub2api` / CCS / Claude Code 终端非流式现象仍需按宿主链路继续排查
 
 ## 0.5.9 - 2026-04-12
