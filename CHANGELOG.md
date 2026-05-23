@@ -1,5 +1,13 @@
 # 更新日志
 
+## 0.5.10 - 2026-05-23
+
+- 修复 `issue #18`：`TaskCompleted` / `TaskUpdate(status=completed)` 不再因为 description 证据格式不够理想而被 hello2cc 硬拦截；仍会给出 stderr 提示，但不再让 task board 与真实完成状态漂移
+- 兼容新版本 Claude Code 的 `Task -> Agent` 原生工具更名：现在把 `Task` 视为 `Agent` 的别名，同步覆盖 capability 识别、hook matcher、真实会话回归与状态连续体
+- 收紧 capability / compare / explain 场景下的 team / task-board 注入，避免“讲使用场景、做表格对比、解释协议”时误触发 `default` team、误演示 subagent/team/workflow
+- 更新 native agent / output style 约束，减少过度规划、强行确认、元叙述、表演式协作和不必要的工具教学
+- 保留 streaming / proxy 问题的宿主边界：已尽量减少多余注入，但 `sub2api` / CCS / Claude Code 终端非流式现象仍需按宿主链路继续排查
+
 ## 0.5.9 - 2026-04-12
 
 - 去掉 hello2cc 对 `TeamCreate` 的两条非宿主确定性前置 deny：普通非 team 语义请求、以及“当前已存在 active team”场景都改为交还 Claude Code 原生处理

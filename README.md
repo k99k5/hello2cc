@@ -28,6 +28,17 @@ Compared with `0.4.9`, this release changes how `hello2cc` coexists with surface
 
 ---
 
+## 🆕 What 0.5.10 fixes
+
+| Problem | Current behavior |
+|---|---|
+| `TaskCompleted` / `TaskUpdate(status=completed)` could be blocked by hello2cc red-hook validation even after the real work was done | Switched to warning-first: weak task descriptions still produce stderr guidance, but they no longer block completion-state sync |
+| New Claude Code surfaces renamed the native `Task` subagent tool to `Agent`, while hello2cc still recognized some paths too narrowly | `Task` is now treated as an `Agent` alias across hooks, capability detection, session continuity, and real-session regression coverage |
+| Capability questions about subagents, task tools, or `ToolSearch` could get escalated into team / task-board demos and hit `Team "default" does not exist` style failures | capability / compare / explain prompts now answer directly instead of defaulting to real team, real task-board, or real workflow execution |
+| After enabling hello2cc, some sessions drifted into over-planning, forced confirmation, tool theater, or meta process narration | native agent and output-style constraints were tightened to stay closer to execution-first, low-ceremony behavior |
+
+---
+
 ## 🎯 Why use hello2cc?
 
 | Common problem | What hello2cc improves |
@@ -131,6 +142,7 @@ Replace `<repo-path>` with your local `hello2cc` repository path.
 
 ```bash
 claude plugins install hello2cc@hello2cc-local
+claude plugins enable hello2cc@hello2cc-local
 ```
 
 Then reopen Claude Code or run `/reload-plugins`.
@@ -208,6 +220,7 @@ claude plugins uninstall --scope user hello2cc@hello2cc-local
 claude plugins marketplace remove hello2cc-local
 claude plugins marketplace add "<repo-path>"
 claude plugins install hello2cc@hello2cc-local
+claude plugins enable hello2cc@hello2cc-local
 ```
 
 Then reopen Claude Code or run `/reload-plugins`.
@@ -252,6 +265,30 @@ Recent versions add a compatibility layer for plain-text `SendMessage`.
 
 Update to `0.5.0`, then reload the plugin cleanly.  
 Current versions remove the plugin-side pre-deny for explicit teammate retries, so missing-team handling falls back to Claude Code's native team error path instead.
+
+### `TaskCompleted` or `TaskUpdate(status=completed)` still gets stuck
+
+Update to `0.5.10` or later, then reload the plugin cleanly.  
+Current versions downgrade this completion-quality check from a hard block to a warning-first guard, so completed work no longer stays out of sync with the task board just because the description format was imperfect.
+
+### New Claude Code builds look like `Agent` and `Task` no longer match
+
+Update to `0.5.10` or later.  
+Recent Claude Code versions renamed the native subagent tool from `Task` to `Agent`; hello2cc now treats both names as the same native capability.
+
+### CCS + sub2api + codex still shows `Team "default" does not exist`
+
+`0.5.10` reduces accidental team injection for capability, comparison, and explanation prompts, which removes one common trigger.  
+If it still happens, inspect the Claude Code debug log first and confirm whether the upstream model or proxy is still emitting a real tool input such as `team_name: "default"` or `name + team_name`.
+
+### Terminal output is still not streaming
+
+This release reduced extra injected workflow text, but it did not uncover a repo-side code path that explicitly disables Claude Code streaming.  
+If the issue remains, check:
+
+1. whether `sub2api` is buffering streaming responses into a single payload
+2. whether your CCS Anthropic endpoint and Responses endpoint are both configured for true streaming passthrough
+3. whether `claude --debug-file <path>` already shows the upstream response arriving as non-streaming
 
 ### Current-info or compare tasks keep missing web results
 

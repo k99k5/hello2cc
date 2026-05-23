@@ -28,6 +28,17 @@
 
 ---
 
+## 🆕 0.5.10 修复了什么
+
+| 问题 | 现在的行为 |
+|---|---|
+| `TaskCompleted` / `TaskUpdate(status=completed)` 会被 hello2cc 红字拦截，导致任务明明做完了却无法完成 | 改成 warning-first：仍会提示任务描述太薄或缺少验收证据，但不再阻断完成态同步 |
+| 新版 Claude Code 把原生 `Task` 工具更名成 `Agent` 后，hello2cc 在某些链路上识别不全 | 现在把 `Task` 视为 `Agent` 别名，hook、能力识别、状态连续体、真实回归一起兼容 |
+| 只是问 subagent / task / ToolSearch 的用法或做表格对比，却被带去演示 team / task board | capability / compare / explain 场景会先直接回答，不再默认升级成真实 team、真实 task board、真实 workflow 演示 |
+| 启用 hello2cc 后出现过度规划、强行确认、工具表演、元叙述过多 | native agent 与 output style 新增约束，尽量贴近 helloagents 的“直接推进、少废话、不演示流程” |
+
+---
+
 ## 🎯 为什么使用 hello2cc
 
 | 常见问题 | hello2cc 的改善 |
@@ -131,6 +142,7 @@ claude plugins marketplace add "<repo-path>"
 
 ```bash
 claude plugins install hello2cc@hello2cc-local
+claude plugins enable hello2cc@hello2cc-local
 ```
 
 然后重开 Claude Code，或执行 `/reload-plugins`。
@@ -208,6 +220,7 @@ claude plugins uninstall --scope user hello2cc@hello2cc-local
 claude plugins marketplace remove hello2cc-local
 claude plugins marketplace add "<repo-path>"
 claude plugins install hello2cc@hello2cc-local
+claude plugins enable hello2cc@hello2cc-local
 ```
 
 然后重开 Claude Code，或执行 `/reload-plugins`。
@@ -252,6 +265,30 @@ claude plugins install hello2cc@hello2cc-local
 
 请升级到 `0.5.0` 后重新加载插件。  
 当前版本已经移除显式 teammate 重试时的插件侧前置 deny，missing-team 会改回走 Claude Code 原生的 team 报错路径。
+
+### `TaskCompleted` 或 `TaskUpdate(status=completed)` 还是被卡住
+
+请升级到 `0.5.10` 或更高版本并重新加载插件。  
+当前版本已经把这类 task completion 质量检查从 hard block 调整为 warning-first，不再因为 description 文案不够“像模板”就让任务无法完成。
+
+### 新版 Claude Code 里看起来像 `Agent` / `Task` 对不上
+
+请升级到 `0.5.10` 或更高版本。  
+Claude Code 新版本里原生 subagent 工具已经从 `Task` 更名为 `Agent`，hello2cc 现在会把两者当成同一原生能力处理。
+
+### 在 CCS + sub2api + codex 场景里还会出现 `Team "default" does not exist`
+
+`0.5.10` 已收紧“能力说明 / 对比 / 教程问法”下的 team 注入，能减少这类误触发。  
+如果仍然出现，优先按 Claude Code 宿主链路继续排查：打开 debug log，看是不是上游模型或代理仍在主动生成 `team_name: "default"` / `name + team_name` 这一类真实工具输入。
+
+### 终端没有流式输出
+
+当前仓库这次已尽量减少多余上下文注入和误导性 workflow 文本，但没有直接发现会主动关闭 Claude Code 流式输出的代码路径。  
+如果问题仍在，优先排查：
+
+1. `sub2api` 反代是否把 streaming 响应缓冲成整包输出
+2. CCS 当前选用的是 Anthropic 端点还是 Responses 端点，以及两边是否都开启了真正的流式透传
+3. Claude Code `--debug-file` 日志里是否已经显示上游返回就是非流式
 
 ### current-info 或对比题经常搜不到结果
 
