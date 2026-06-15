@@ -68,8 +68,8 @@ test('task-completed completed-status warnings no longer block legitimate task-b
 test('task-created no longer blocks the issue-15 topic-only description shape', () => {
   const result = run({
     hook_event_name: 'TaskCreated',
-    task_subject: '实现 hello2cc 静默支持 ccstatusline 上下文显示',
-    task_description: '修复 ccstatusline 上下文显示问题',
+    task_subject: '实现 hello2cc 静默支持上下文显示',
+    task_description: '修复上下文显示问题',
   });
 
   assert.equal(result.status, 0, result.stderr);

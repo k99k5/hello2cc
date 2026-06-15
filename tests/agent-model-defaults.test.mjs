@@ -34,7 +34,7 @@ function isolatedEnv(overrides = {}) {
   };
 }
 
-test('pre-agent-model injects default_agent_model for general-purpose workers and normalizes opus(1M)', () => {
+test('pre-agent-model injects default_agent_model for general-purpose workers without normalizing the value', () => {
   const env = isolatedEnv({
     CLAUDE_PLUGIN_OPTION_DEFAULT_AGENT_MODEL: 'opus(1M)',
   });
@@ -47,8 +47,8 @@ test('pre-agent-model injects default_agent_model for general-purpose workers an
     },
   }, env);
 
-  assert.equal(output.hookSpecificOutput.updatedInput.model, 'opus');
-  assert.match(output.hookSpecificOutput.permissionDecisionReason, /Agent\.model=opus/);
+  assert.equal(output.hookSpecificOutput.updatedInput.model, 'opus(1M)');
+  assert.match(output.hookSpecificOutput.permissionDecisionReason, /Agent\.model=opus\(1M\)/);
 });
 
 test('pre-agent-model applies default_agent_model to Plan when explicitly configured', () => {
@@ -64,7 +64,7 @@ test('pre-agent-model applies default_agent_model to Plan when explicitly config
     },
   }, env);
 
-  assert.equal(output.hookSpecificOutput.updatedInput.model, 'opus');
+  assert.equal(output.hookSpecificOutput.updatedInput.model, 'opus(1M)');
 });
 
 test('pre-agent-model lets inherit opt out of default_agent_model for per-agent overrides', () => {

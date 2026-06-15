@@ -6,7 +6,6 @@
 - 兼容新版本 Claude Code 的 `Task -> Agent` 工具更名：统一把 `Task` 视为 `Agent` 别名，并同步覆盖 hooks、capability 识别、session continuity 与真实会话回归
 - 收紧 capability / compare / explain 场景下的 team / task-board 注入，减少 `Team "default" does not exist` 这类误触发
 - 收紧 native agent 与 output style 的文本纪律，减少过度规划、强制确认、元叙述、黑话和邀约式结尾
-- 补强 `ccstatusline` transcript usage 回填：兼容 `agentId` / `agent_id` / `agent.id`、direct transcript path，以及常见 1M 模型别名和 `CLAUDE_CODE_MAX_CONTEXT_TOKENS` 推断
 - 同步补强 subagent 身份读取器的 camelCase / snake_case / nested 兼容，并补充相关回归测试与对齐审计文档
 
 ## 0.5.10 - 2026-05-23
@@ -36,11 +35,6 @@
 - 保留 `TaskCompleted` 的完成证据校验，继续只在真正“标记完成”时阻断缺少验证依据的任务收尾
 - 补充 `TaskCreated` 薄描述、issue 复现场景、空描述转发三类回归测试，确保创建态不再误伤
 
-## 0.5.6 - 2026-04-12
-
-- 新增 `ccstatusline` 兼容桥接命令，可在不修改 Claude Code / ccstatusline 源码的前提下，把 hello2cc 第三方模型场景里的 transcript usage 回填到 status line JSON
-- 回填主会话与已引用 subagent transcript 的 `current_usage`、输入/输出 token 总量与上下文占用百分比，避免 `ccstatusline` 进度条在缺失/为 0 的宿主字段上一直显示 0
-- 补充桥接命令、过滤器和 subagent usage 聚合回归测试，并新增中文接入说明
 
 ## 0.5.5 - 2026-04-12
 

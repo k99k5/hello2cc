@@ -51,7 +51,6 @@ Compared with the previous public release (`v0.5.9`), `0.5.11` adds two practica
 - **Task lifecycle protection**: keeps task creation and task completion checks separate so a completed task is less likely to stay out of sync with the board.
 - **Task-to-Agent compatibility**: supports both old and new Claude Code subagent tool names in the same plugin build.
 - **Response-style tightening**: reduces over-planning, forced confirmations, tool theater, meta narration, jargon-heavy phrasing, and invitation-style endings.
-- **ccstatusline bridge**: backfills status-line usage from transcripts when Claude Code surfaces zeroed usage fields in third-party-model sessions.
 
 ## Quick Start
 
@@ -117,9 +116,9 @@ Good when your model mapping is already handled elsewhere and you only want hell
 }
 ```
 
-### Stable default agent slot
+### Stable default agent model
 
-Good when you want most spawned agents to use the same Claude slot:
+Good when you want most spawned agents to use the same explicit model value:
 
 ```json
 {
@@ -128,8 +127,7 @@ Good when you want most spawned agents to use the same Claude slot:
 }
 ```
 
-Use Claude slot values such as `inherit`, `opus`, `sonnet`, or `haiku` here.  
-If your real target model is mapped through CCSwitch, keep that mapping in CCSwitch instead of writing third-party aliases into hello2cc.
+`inherit` still means “do not inject a model”. Any other value is passed through to Claude Code as configured, so keep it aligned with the Agent model values your local setup accepts.
 
 ## How it works
 
@@ -193,14 +191,8 @@ If the issue remains, check:
 2. whether your CCS Anthropic endpoint and Responses endpoint both expose true streaming passthrough
 3. whether `claude --debug-file <path>` already shows the upstream response arriving as non-streaming
 
-### `ccstatusline` still shows zero usage
-
-Use the bridge command described in [`docs/ccstatusline.md`](./docs/ccstatusline.md).  
-The bridge reads transcript usage, supports `agentId` / `agent_id` / `agent.id` and direct subagent transcript paths, and backfills `context_window` fields only when Claude Code left them empty or zero.
-
 ## Documentation
 
-- [中文接入说明：ccstatusline 兼容桥接](./docs/ccstatusline.md)
 - [Claude Code 重构方案对齐审计](./docs/claude-code-refactor-alignment-audit.md)
 - [更新日志](./CHANGELOG.md)
 

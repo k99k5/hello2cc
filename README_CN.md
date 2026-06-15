@@ -51,7 +51,6 @@
 - **task lifecycle 收口**：把建任务和完结任务的校验边界拆开，避免任务明明做完却因为插件红字卡在 board 里。
 - **Task-to-Agent 兼容**：同一个版本里同时兼容旧 `Task` 名称和新 `Agent` 名称。
 - **回复风格收紧**：减少过度规划、强制确认、工具表演、元叙述、黑话和邀约式结尾。
-- **ccstatusline 桥接**：在第三方模型链路下 Claude Code usage 字段为 0 时，可从 transcript 回填状态线统计。
 
 ## 快速开始
 
@@ -117,9 +116,9 @@ claude plugins list
 }
 ```
 
-### 固定默认 agent 槽位
+### 固定默认 agent model
 
-适合希望大多数 agent 默认落到同一个 Claude 槽位：
+适合希望大多数 agent 默认使用同一个显式模型值：
 
 ```json
 {
@@ -128,8 +127,7 @@ claude plugins list
 }
 ```
 
-这里建议只写 Claude 槽位值，例如 `inherit`、`opus`、`sonnet`、`haiku`。  
-如果真实模型映射由 CCSwitch 处理，就继续把第三方模型别名保留在 CCSwitch，不要直接写进 hello2cc。
+`inherit` 仍表示“不注入 model”。其他值会按配置原样传给 Claude Code，因此需要与你本地 Agent 能接受的 model 值保持一致。
 
 ## 工作原理
 
@@ -193,14 +191,8 @@ hello2cc 现在已经把 `Task` 统一当作 `Agent` 别名处理。
 2. CCS 当前 Anthropic 端点和 Responses 端点是否都真正开启了流式透传
 3. `claude --debug-file <path>` 日志里是否已经显示上游返回本身就是非流式
 
-### `ccstatusline` 还是显示 0 usage
-
-请使用 [`docs/ccstatusline.md`](./docs/ccstatusline.md) 里的桥接命令。  
-桥接脚本会从 transcript 回填 usage，兼容 `agentId` / `agent_id` / `agent.id` 以及 direct subagent transcript path，并且只在 Claude Code 传来的 `context_window` 字段缺失或为 0 时才回填。
-
 ## 文档
 
-- [ccstatusline 兼容桥接](./docs/ccstatusline.md)
 - [Claude Code 重构方案对齐审计](./docs/claude-code-refactor-alignment-audit.md)
 - [更新日志](./CHANGELOG.md)
 

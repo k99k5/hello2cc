@@ -28,19 +28,19 @@
     "mirror_session_model": {
       "title": "Mirror Session Model",
       "type": "boolean",
-      "description": "是否默认把当前 Claude Code 会话的主模型别名镜像到缺失 model 的原生 Agent / Team teammate。默认 true，更接近原生槽位体验。",
+      "description": "是否默认把当前 Claude Code 会话的主模型别名镜像到缺失 model 的原生 Agent / Team teammate。默认 true。",
       "sensitive": false
     },
     "default_agent_model": {
       "title": "Default Agent Model",
       "type": "string",
-      "description": "原生 Agent 的统一默认模型偏好。推荐填写 inherit / opus / sonnet / haiku；若兼容填写 opus(1M)，hello2cc 会在 Agent.model 边界归一化为宿主安全的 opus。真正的 Opus→opus(1M) 落点应在 CCSwitch 的“Opus 默认模型”中配置。",
+      "description": "原生 Agent 的统一默认模型偏好。填写 inherit 表示不注入 model；其他值会按配置原样传给 Claude Code。",
       "sensitive": false
     },
     "primary_model": {
       "title": "Primary Model",
       "type": "string",
-      "description": "高能力原生 Agent 的显式 Claude 槽位，仅填写 opus / sonnet / haiku 之一。第三方模型请在 provider / gateway / ccswitch 层映射到这些原生槽位；这里不要直接填写 cc-gpt-5.4 一类别名。",
+      "description": "高能力原生 Agent 的显式 model 值。非 inherit 值会按配置原样传给 Claude Code。",
       "sensitive": false
     },
     "subagent_model": {
@@ -52,31 +52,31 @@
     "guide_model": {
       "title": "Guide Model",
       "type": "string",
-      "description": "Claude Code Guide（内部标识 claude-code-guide）的显式 Claude 槽位，仅填写 opus / sonnet / haiku。留空时优先镜像当前会话模型对应的原生槽位。",
+      "description": "Claude Code Guide（内部标识 claude-code-guide）的显式 model 值。留空时优先镜像当前会话模型。",
       "sensitive": false
     },
     "explore_model": {
       "title": "Explore Model",
       "type": "string",
-      "description": "Explore 的显式 Claude 槽位，仅填写 opus / sonnet / haiku。留空时优先镜像当前会话模型对应的原生槽位，而不是插件再硬编码轻量模型。",
+      "description": "Explore 的显式 model 值。留空时优先镜像当前会话模型，而不是插件再硬编码轻量模型。",
       "sensitive": false
     },
     "plan_model": {
       "title": "Plan Model",
       "type": "string",
-      "description": "Plan 的显式 Claude 槽位，仅填写 opus / sonnet / haiku。留空时默认保留 Claude Code 原生 inherit 行为；仅在你想强制覆盖时填写。",
+      "description": "Plan 的显式 model 值。留空时默认保留 Claude Code 原生 inherit 行为；仅在你想强制覆盖时填写。",
       "sensitive": false
     },
     "general_model": {
       "title": "General Model",
       "type": "string",
-      "description": "General-Purpose（内部标识 general-purpose）的显式 Claude 槽位，仅填写 opus / sonnet / haiku。留空时默认保留 Claude Code 原生 inherit 行为；仅在你想强制覆盖时填写。",
+      "description": "General-Purpose（内部标识 general-purpose）的显式 model 值。留空时默认保留 Claude Code 原生 inherit 行为；仅在你想强制覆盖时填写。",
       "sensitive": false
     },
     "team_model": {
       "title": "Team Model",
       "type": "string",
-      "description": "带 team_name 的原生 Agent 显式 Claude 槽位，仅填写 opus / sonnet / haiku。留空时默认保留 Claude Code 原生 inherit 行为；仅在你想强制覆盖团队 teammate 时填写。",
+      "description": "带 team_name 的原生 Agent 显式 model 值。留空时默认保留 Claude Code 原生 inherit 行为；仅在你想强制覆盖团队 teammate 时填写。",
       "sensitive": false
     }
   }

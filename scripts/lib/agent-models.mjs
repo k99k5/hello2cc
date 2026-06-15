@@ -8,8 +8,6 @@ function normalizeSlug(value) {
     .replace(/^-+|-+$/g, '');
 }
 
-const HOST_AGENT_MODEL_SLOTS = ['opus', 'sonnet', 'haiku'];
-
 function isInheritModel(value) {
   return normalizeSlug(value) === 'inherit';
 }
@@ -41,24 +39,6 @@ function canonicalAgentType(input) {
   }
 
   return raw;
-}
-
-function hostAgentModelSlot(value) {
-  const slug = normalizeSlug(value);
-  if (!slug) return '';
-
-  for (const slot of HOST_AGENT_MODEL_SLOTS) {
-    if (
-      slug === slot ||
-      slug.startsWith(`${slot}-`) ||
-      slug.endsWith(`-${slot}`) ||
-      slug.includes(`-${slot}-`)
-    ) {
-      return slot;
-    }
-  }
-
-  return '';
 }
 
 function preferredModelForAgent(input, config) {
@@ -131,31 +111,8 @@ export function resolvedAgentModelOverride(input, config) {
     return { model: '', reason: '' };
   }
 
-  const directSlot = hostAgentModelSlot(preferredModel);
-  if (directSlot) {
-    return {
-      model: directSlot,
-      reason: `hello2cc injected Agent.model=${directSlot}`,
-    };
-  }
-
-  const fallbackSlot = [
-    config?.sessionModel,
-    config?.defaultAgentModel,
-    config?.subagentModel,
-    config?.primaryModel,
-    config?.generalModel,
-    config?.teamModel,
-  ]
-    .map(hostAgentModelSlot)
-    .find(Boolean) || '';
-
-  if (!fallbackSlot) {
-    return { model: '', reason: '' };
-  }
-
   return {
-    model: fallbackSlot,
-    reason: `hello2cc normalized unsupported Agent.model=${preferredModel} to host-safe slot=${fallbackSlot}`,
+    model: preferredModel,
+    reason: `hello2cc injected Agent.model=${preferredModel}`,
   };
 }
