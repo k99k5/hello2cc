@@ -102,17 +102,5 @@ function preferredModelForAgent(input, config) {
 }
 
 export function resolvedAgentModelOverride(input, config) {
-  const preferredModel = preferredModelForAgent(input, config);
-  if (!preferredModel) {
     return { model: '', reason: '' };
-  }
-
-  if (isInheritModel(preferredModel)) {
-    return { model: '', reason: '' };
-  }
-
-  return {
-    model: preferredModel,
-    reason: `hello2cc injected Agent.model=${preferredModel}`,
-  };
 }
